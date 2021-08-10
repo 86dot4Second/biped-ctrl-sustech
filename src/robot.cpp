@@ -14,6 +14,7 @@ extern const double PI;
 double input_angle[10] = { 0 };
 double current[10] = { 0 };
 
+//ring ring ring
 namespace robot 
 {
 	auto MoveJoint::prepareNrt()->void {
