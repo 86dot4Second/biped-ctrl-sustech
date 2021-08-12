@@ -77,7 +77,7 @@ void BipedIK(const Vec& end_xyz_position, const Vec& end_abc_pointing, double en
 		input[0] = -theta_1;
 
 	//Çóq2
-	if (m[2] >= 0)
+	if (m[0] >= 0)
 		input[1] = theta_2;
 	else
 		input[1] = -theta_2;
