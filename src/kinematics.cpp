@@ -52,17 +52,20 @@ void BipedIK(const Vec& end_xyz_position, const Vec& end_abc_pointing, double en
 	const double AO = 154.5;
 	const double AD = 150;
 	const double CD = 422.02;
-	const double AB = 487.46;
-	const double BC = 88.82;
-	const double BE = 509.51;
+	const double AB = 560.92113834;
+	const double BC = 176.00866644;
+	const double BE = 549.31309270;
 	const double CE = 426.61;
 	const double EG = 326.82;
-	const double HI = 280;
-	const double GH = 120;
+	const double HI = 309.99078879;
+	const double GH = 60;
 	const double EK = 40;
 	const double IK = 85;
 	const double KM = l - 85;
 	const double EI = sqrt(IK * IK + EK * EK);
+	const double q30 = 151.92 / 180.0 * PI;
+	const double q40 = 126.85 / 180.0 * PI;
+	const double q50 = 74.1 / 180.0 * PI;
 
 	Vec m = cross(end_xyz_position, end_abc_pointing);
 	Vec p1 = cross(m, Vec{ 1, 0, 0 });
@@ -70,17 +73,17 @@ void BipedIK(const Vec& end_xyz_position, const Vec& end_abc_pointing, double en
 	double theta_1 = iangle(p1, Vec{ 0, 1, 0 });
 	double theta_2 = iangle(p2, m);
 
-	//求q1
-	if (p1[2] <= 0)
+	//求q1,q2
+	/*if (p1[2] <= 0)
 		input[0] = theta_1;
 	else
 		input[0] = -theta_1;
-
-	//求q2
 	if (m[0] >= 0)
 		input[1] = theta_2;
 	else
-		input[1] = -theta_2;
+		input[1] = -theta_2;*/
+	input[0] = p1[2] <= 0 ? theta_1 : -theta_1;
+	input[1] = m[0] >= 0 ? theta_2 : -theta_2;
 
 	//将基座标系转移到腿平面坐标系下
 	Vec xl, yl, zl;
@@ -157,7 +160,7 @@ void BipedIK(const Vec& end_xyz_position, const Vec& end_abc_pointing, double en
 
 	//求出初始状态时腿平面各角度
 	//设定q4初始角度（角ADC）为3/4π，点A与点E处在同一竖直线上
-	double q40 = 3.0 / 4.0 * PI;
+	/*double q40 = 3.0 / 4.0 * PI;
 
 	double AC_0 = lcosine(AD, CD, q40);
 	double a_BAD_0 = acosine(AC_0, AB, BC) + acosine(AC_0, AD, CD);
@@ -169,7 +172,7 @@ void BipedIK(const Vec& end_xyz_position, const Vec& end_abc_pointing, double en
 	double a_AEC_0 = acosine(AE_0, CE, AC_0);
 	double a_GEI_0 = PI/2 - a_AEC_0 + a_EIM;
 	double GI_0 = lcosine(EG, EI, a_GEI_0);
-	double q50 = acosine(GI_0, EG, EI) + acosine(GI_0, GH, HI);
+	double q50 = acosine(GI_0, EG, EI) + acosine(GI_0, GH, HI);*/
 
 	//求出q3,q4,q5
 	input[2] = q30 - a_OAD;
@@ -178,6 +181,7 @@ void BipedIK(const Vec& end_xyz_position, const Vec& end_abc_pointing, double en
 
 }
 
+//测试用
 //int main() {
 //	Vec end_position = { 93.5964, -717.1136, 3.231 };
 //	Vec end_pointing = { 32.9283, 140.4168, 41.217 };

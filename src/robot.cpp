@@ -13,6 +13,19 @@ extern const double PI;
 
 double input_angle[10] = { 0 };
 double current[10] = { 0 };
+double prepare_position[10] = 
+{
+	0,
+	(180 - 126.85) / 180.0 * PI,
+	(180 - 151.92) / 180.0 * PI,
+	0,
+	0,
+	0,
+	0,
+	(180 - 151.92) / 180.0 * PI,
+	(180 - 126.85) / 180.0 * PI,
+	0
+}; 
 
 namespace robot 
 {
@@ -124,6 +137,51 @@ namespace robot
 			"</Command>");
 	}
 
+	//回到准备状态
+	auto RobotPrepare::prepareNrt()->void
+	{
+		for (auto& m : motorOptions()) m = aris::plan::Plan::NOT_CHECK_ENABLE;
+	}
+	auto RobotPrepare::executeRT()->int
+	{
+		static double begin_angle[10];
+		double angle[10] = { 0 };
+		if (count() == 1)
+		{
+			begin_angle[0] = controller()->motionPool()[0].actualPos();
+			begin_angle[1] = controller()->motionPool()[1].actualPos();
+			begin_angle[2] = controller()->motionPool()[2].actualPos();
+			begin_angle[3] = controller()->motionPool()[3].actualPos();
+			begin_angle[4] = controller()->motionPool()[4].actualPos();
+			begin_angle[5] = controller()->motionPool()[5].actualPos();
+			begin_angle[6] = controller()->motionPool()[6].actualPos();
+			begin_angle[7] = controller()->motionPool()[7].actualPos();
+			begin_angle[8] = controller()->motionPool()[8].actualPos();
+			begin_angle[9] = controller()->motionPool()[9].actualPos();
+		}
+
+		TCurve s1(0.016, 0.3);
+		s1.getCurveParam();
+
+		for (int i = 0; i < 10; i++)
+		{
+			angle[i] = begin_angle[i] + (prepare_position[i] - begin_angle[i]) * s1.getTCurve(count());
+		}
+
+		for (int i = 0; i < 10; i++)
+		{
+			controller()->motionPool()[i].setTargetPos(angle[i]);
+		}
+
+		return s1.getTc() * 1000 - count();
+	}
+	auto RobotPrepare::collectNrt()->void {}
+	RobotPrepare::RobotPrepare(const std::string& name)
+	{
+		aris::core::fromXmlString(command(),
+			"<Command name=\"rbt_prepare\"/>");
+	}
+
 	//移动左右脚末端，脚尖指向x正方向
 	auto MoveEnd::prepareNrt()->void {
 		xl = doubleParam("x_left_leg");
@@ -163,16 +221,23 @@ namespace robot
 		BipedIK(end_left_position, Vec{ 1, 0, 0 }, ll, input_angle + 0 * 5);
 		BipedIK(end_right_position, Vec{ 1, 0, 0 }, lr, input_angle + 1 * 5);
 
+		/*for (auto& x : input_angle)
+			mout() << x << endl;*/
+		for (int i = 0; i < 10; i++)
+		{
+			mout() << i << " " << begin_angle[i] << "\t\n";
+		}
+
 		//加减号由方向决定，需测试获得
-		double angle0 = begin_angle[0] - input_angle[4] * s1.getTCurve(count());
+		/*double angle0 = begin_angle[0] + input_angle[4] * s1.getTCurve(count());
 		double angle1 = begin_angle[1] + input_angle[3] * s1.getTCurve(count());
 		double angle2 = begin_angle[2] + input_angle[2] * s1.getTCurve(count());
 		double angle3 = begin_angle[3] + input_angle[1] * s1.getTCurve(count());
 		double angle4 = begin_angle[4] + input_angle[0] * s1.getTCurve(count());
 		double angle5 = begin_angle[5] + input_angle[5] * s1.getTCurve(count());
 		double angle6 = begin_angle[6] + input_angle[6] * s1.getTCurve(count());
-		double angle7 = begin_angle[7] - input_angle[7] * s1.getTCurve(count());
-		double angle8 = begin_angle[8] - input_angle[8] * s1.getTCurve(count());
+		double angle7 = begin_angle[7] + input_angle[7] * s1.getTCurve(count());
+		double angle8 = begin_angle[8] + input_angle[8] * s1.getTCurve(count());
 		double angle9 = begin_angle[9] + input_angle[9] * s1.getTCurve(count());
 
 		controller()->motionPool()[0].setTargetPos(angle0);
@@ -184,9 +249,9 @@ namespace robot
 		controller()->motionPool()[6].setTargetPos(angle6);
 		controller()->motionPool()[7].setTargetPos(angle7);
 		controller()->motionPool()[8].setTargetPos(angle8);
-		controller()->motionPool()[9].setTargetPos(angle9);
+		controller()->motionPool()[9].setTargetPos(angle9);*/
 
-		return s1.getTc() * 1000 - count();
+		return 0;//s1.getTc() * 1000 - count();
 	}
 	auto MoveEnd::collectNrt()->void {}
 	MoveEnd::MoveEnd(const string& name) {
@@ -225,17 +290,29 @@ namespace robot
 #else
 			std::cout << "not using simulation" << std::endl;
 			double pos_offset[10]
+			/*{
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			};*/
 			{
-		0.644464,
-		-0.736742,
-		-0.515609,
-		0.887983,
-		0.798197,
-		-0.123869,
-		-2.88542,
-		2.54521,
-		-0.0645231,
-		2.58562,
+				0.389823,
+				-0.205458,
+				-0.541879,
+				0.904521,
+				0.785734,
+				-0.136476,
+				-2.81231,
+				2.60734,
+				0.0327409,
+				-0.425296,
 			};
 #endif
 			//添加负号可改变电机正转方向
@@ -357,6 +434,7 @@ namespace robot
 		plan_root->planPool().add<MoveJoint>();
 		plan_root->planPool().add<ReadPosition>();
 		plan_root->planPool().add<TestMotor>();
+		plan_root->planPool().add<RobotPrepare>();
 		plan_root->planPool().add<MoveEnd>();
 
 		return plan_root;

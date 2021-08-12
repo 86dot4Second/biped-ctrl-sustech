@@ -46,6 +46,18 @@ namespace robot
 		int motornumber_;
 	};
 
+	class RobotPrepare : public aris::core::CloneObject<RobotPrepare, aris::plan::Plan>
+	{
+	public:
+		auto virtual prepareNrt()->void;
+		auto virtual executeRT()->int;
+		auto virtual collectNrt()->void;
+
+		explicit RobotPrepare(const std::string& name = "RobotPrepare");
+	private:
+
+	};
+
 	class MoveEnd : public aris::core::CloneObject<MoveEnd, aris::plan::Plan> 
 	{
 	public:
