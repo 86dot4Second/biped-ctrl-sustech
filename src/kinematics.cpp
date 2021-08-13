@@ -58,7 +58,7 @@ void BipedIK(const Vec& end_xyz_position, const Vec& end_abc_pointing, double en
 	const double CE = 426.61;
 	const double EG = 326.82;
 	const double HI = 309.99078879;
-	const double GH = 60;
+	const double GH = 65;
 	const double EK = 40;
 	const double IK = 85;
 	const double KM = l - 85;
@@ -104,11 +104,11 @@ void BipedIK(const Vec& end_xyz_position, const Vec& end_abc_pointing, double en
 	if (n0[0] == 0) {
 		if (n0[1] >= 0) {
 			E_leg = { M0[0] - EK, M0[1] - KM };
-			theta_4 = PI / 2 + a_EIM;
+			theta_4 = PI / 2.0 + a_EIM;
 		}
 		else {
 			E_leg = { M0[0] - EK, M0[1] - KM };
-			theta_4 = -PI / 2 + a_EIM;
+			theta_4 = -PI / 2.0 + a_EIM;
 		}
 	}
 	else {
@@ -134,23 +134,23 @@ void BipedIK(const Vec& end_xyz_position, const Vec& end_abc_pointing, double en
 	double a_BEC = acosine(BE, CE, BC);
 	
 	double a_OAD;//½ÇOADÓëq3Ïà¹Ø
-	if (M0[0] >= 0)
+	if (E_leg[0] >= 0)
 		a_OAD = PI - (a_BAD - a_BAE + theta_5);
 	else
 		a_OAD = PI - (a_BAD - a_BAE - theta_5);
 
 	double theta_6;
 	if (a_AEB >= a_BEC) {
-		if (M0[0] >= 0) 
-			theta_6 = PI / 2 - theta_5 - a_AEC;
+		if (E_leg[0] >= 0)
+			theta_6 = PI / 2.0 - theta_5 - a_AEC;
 		else
-			theta_6 = PI / 2 + theta_5 - a_AEC;
+			theta_6 = PI / 2.0 + theta_5 - a_AEC;
 	}
 	else {
-		if (M0[0] >= 0) 
-			theta_6 = PI / 2 - theta_5 + a_AEC;
+		if (E_leg[0] >= 0)
+			theta_6 = PI / 2.0 - theta_5 + a_AEC;
 		else
-			theta_6 = PI / 2 + theta_5 + a_AEC;
+			theta_6 = PI / 2.0 + theta_5 + a_AEC;
 	}
 	double a_GEI = theta_4 + theta_6;
 	double GI = lcosine(EG, EI, a_GEI);

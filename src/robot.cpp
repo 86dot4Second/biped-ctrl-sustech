@@ -225,7 +225,7 @@ namespace robot
 			mout() << x << endl;*/
 		for (int i = 0; i < 10; i++)
 		{
-			mout() << i << " " << begin_angle[i] << "\t\n";
+			mout() << i << " " << input_angle[i] << "\t\n";
 		}
 
 		//加减号由方向决定，需测试获得
@@ -290,7 +290,7 @@ namespace robot
 #else
 			std::cout << "not using simulation" << std::endl;
 			double pos_offset[10]
-			/*{
+			{
 				0,
 				0,
 				0,
@@ -301,8 +301,8 @@ namespace robot
 				0,
 				0,
 				0
-			};*/
-			{
+			};
+			/*{
 				0.389823,
 				-0.205458,
 				-0.541879,
@@ -313,7 +313,7 @@ namespace robot
 				2.60734,
 				0.0327409,
 				-0.425296,
-			};
+			};*/
 #endif
 			//添加负号可改变电机正转方向
 			double pos_factor[10]

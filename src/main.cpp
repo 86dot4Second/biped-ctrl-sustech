@@ -1,6 +1,6 @@
 #include <aris.hpp>
 #include "robot.h"
-
+#include "kinematics.h"
 
 
 int main(int argc, char* argv[])
@@ -83,6 +83,17 @@ int main(int argc, char* argv[])
 
 		//等待终端输入函数，本函数不能去掉，否则实时线程和主线程都会结束//
 	cs.runCmdLine();
+
+	//Vec end_position = { 93.5964, -717.1136, 3.231 };
+	//Vec end_pointing = { 32.9283, 140.4168, 41.217 };
+	//Vec end_position = { -10, -1050, 0};
+	//Vec end_pointing = { 1, 0, 0 };
+	//double end_foot = 110; //110;
+	//double input_angle[5] = { 0 };
+	//BipedIK(end_position, end_pointing, end_foot, input_angle);
+	//for (auto& x : input_angle)
+	//	cout << x << endl;
+	//cout << atan(-2) << endl;
 
 	return 0;
 }
