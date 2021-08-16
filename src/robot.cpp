@@ -223,13 +223,13 @@ namespace robot
 
 		/*for (auto& x : input_angle)
 			mout() << x << endl;*/
-		for (int i = 0; i < 10; i++)
+		/*for (int i = 0; i < 10; i++)
 		{
 			mout() << i << " " << input_angle[i] << "\t\n";
-		}
+		}*/
 
 		//加减号由方向决定，需测试获得
-		/*double angle0 = begin_angle[0] + input_angle[4] * s1.getTCurve(count());
+		double angle0 = begin_angle[0] + input_angle[4] * s1.getTCurve(count());
 		double angle1 = begin_angle[1] + input_angle[3] * s1.getTCurve(count());
 		double angle2 = begin_angle[2] + input_angle[2] * s1.getTCurve(count());
 		double angle3 = begin_angle[3] + input_angle[1] * s1.getTCurve(count());
@@ -249,9 +249,9 @@ namespace robot
 		controller()->motionPool()[6].setTargetPos(angle6);
 		controller()->motionPool()[7].setTargetPos(angle7);
 		controller()->motionPool()[8].setTargetPos(angle8);
-		controller()->motionPool()[9].setTargetPos(angle9);*/
+		controller()->motionPool()[9].setTargetPos(angle9);
 
-		return 0;//s1.getTc() * 1000 - count();
+		return s1.getTc() * 1000 - count();
 	}
 	auto MoveEnd::collectNrt()->void {}
 	MoveEnd::MoveEnd(const string& name) {
